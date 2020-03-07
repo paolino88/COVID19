@@ -36,7 +36,7 @@ def get_date_num(file):
 
 def main():
 
-	st.title("Statistic on COVID-19")
+	st.title("Statistic on COVID-19 in Italy")
 	st.subheader("data from : https://github.com/CSSEGISandData/COVID-19")
 	list_date1 = get_date_num('time_series_19-covid-Deaths.csv')[0]
 	list_death = get_date_num('time_series_19-covid-Deaths.csv')[1]
@@ -52,13 +52,21 @@ def main():
 	list_date = list_li_date[pos]
 	lung_data = len(list_date)
 
-	list_death = list_death[:lung_data]
-	list_conf = list_conf[:lung_data]
-	list_rec = list_rec[:lung_data]
+	list_d = list_death[:lung_data]
+	list_c = list_conf[:lung_data]
+	list_r = list_rec[:lung_data]
 
-	dict_el = {'INFECTED':list_conf,'RECOVERD':list_rec,'DEATHS':list_death}
-	df = pd.DataFrame(dict_el, index = list_date)
+	list_conf = [x for x in list_c if x != 0]
+	n_start = len(list_c)-len(list_conf)
 
+	list_conf = list_c[30:]
+	list_death = list_d[30:]
+	list_rec = list_r[30:]
+	list_dates = list_date[30:]
+
+	dict_el = {'INFECTED' : list_conf,'RECOVERD' : list_rec,'DEATHS' : list_death}
+	df = pd.DataFrame(dict_el, index = list_dates)
+	st.text('')
 	st.bar_chart(df)
 
 
