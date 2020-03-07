@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run iris_eda_app.py
+web: sh setup.sh && streamlit run app_covid19.py
