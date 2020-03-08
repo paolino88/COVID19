@@ -64,7 +64,7 @@ def main():
 	list_rec = list_r[30:]
 	list_dates = list_date[30:]
 
-	dict_el = {'INFECTED' : list_conf,'RECOVERD' : list_rec,'DEATHS' : list_death}
+	dict_el = {'1-INFECTED' : list_conf,'2-RECOVERD' : list_rec,'3-DEATHS' : list_death}
 	df = pd.DataFrame(dict_el, index = list_dates)
 	st.text('')
 	st.bar_chart(df)
