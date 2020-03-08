@@ -32,7 +32,7 @@ def get_fit(func,slot,list_conf):
 	return best_fit_ab, sigma_ab
 
 
-def plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,kind):
+def plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,kind,option):
 	a = ufloat(best_fit_ab[0], sigma_ab[0])
 	b = ufloat(best_fit_ab[1], sigma_ab[1])
 
@@ -46,7 +46,7 @@ def plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,kind):
 	fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name=kind,line_color='black'))
 	fig.add_trace(go.Scatter(x=slot, y=bound_upper, fill='tonexty', mode='lines', line_color='grey',showlegend=False))
 	fig.add_trace(go.Scatter(x=slot, y=bound_lower, fill='tonexty',mode='lines', name='Error',line_color='grey'))
-	fig.add_trace(go.Scatter(x=slot, y=func(slot, *best_fit_ab), mode='lines', name='Fit Exp',line_color='red'))
+	fig.add_trace(go.Scatter(x=slot, y=func(slot, *best_fit_ab), mode='lines', name='Fit '+ option,line_color='red'))
 
 	fig.update_layout(xaxis_title="day")
 
@@ -60,6 +60,7 @@ def main():
 
 	st.title("Statistic on COVID-19 in Italy")
 	st.subheader("data from : https://github.com/CSSEGISandData/COVID-19")
+	##list of three features
 	list_date1 = get_date_num('time_series_19-covid-Deaths.csv')[0]
 	list_death = get_date_num('time_series_19-covid-Deaths.csv')[1]
 	list_date2 = get_date_num('time_series_19-covid-Confirmed.csv')[0]
@@ -94,37 +95,53 @@ def main():
 
 	slot = np.arange(1, len(list_dates)+1)
 
-	##fit Exponential
-	st.subheader('Exponential fit : ')
-	st.latex(r'''func = ae^{b(day)}''')
 
-	func = lambda x, a, b: a * np.exp(b * x)
+	option = st.selectbox(
+		'Choose the Epidemiologic Law :',
+		['Exponential Law','Gompertz Law','Logistic Law'])
+
+	if option == 'Exponential Law':
+		st.subheader('Exponential fit : ')
+		st.latex(r'''func = ae^{b(day)}''')
+
+		func = lambda x, a, b: a * np.exp(b * (x-1))
+	elif option == 'Gompertz Law':
+		st.subheader('Gompertz fit : ')
+		st.latex(r'''func = a*exp\left\{ ln\left(\frac{N(day=1)}{a} \right) e^{-b(day)} \right\}''')
+		c = 1
+		func = lambda x, a, b : a * np.exp(np.log(c/a) * np.exp(-b*(x-1)))
+	else:
+		st.subheader('Logistic fit : ')
+		st.latex(r'''func = N(day = 1) \frac{e^{b(day)}}{1-\frac{N(day=1)}{a}\left[ 1-e^{b(day)}\right]}''')
+		c = 1
+		func = lambda x, a, b: c * np.exp(b * x)/(1-(c/a)*(1-np.exp(b * x)))
+
 
 	##fit infection
-
+	c = list_conf[0]
 	param_fit = get_fit(func,slot,list_conf)
 	best_fit_ab = param_fit[0]
 	sigma_ab = param_fit[1]
 
-	fig = plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,'INFECTION')
+	fig = plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,'INFECTION',option)
 	st.plotly_chart(fig)
 
 	##fit death
-
+	c = list_death[0]
 	param_fit = get_fit(func,slot,list_death)
 	best_fit_ab = param_fit[0]
 	sigma_ab = param_fit[1]
 
-	fig = plot_figure(func,list_death,best_fit_ab,sigma_ab,slot,'DEATH')
+	fig = plot_figure(func,list_death,best_fit_ab,sigma_ab,slot,'DEATH',option)
 	st.plotly_chart(fig)
 
 	##fit recovered
-
+	c = list_rec[3]
 	param_fit = get_fit(func,slot,list_rec)
 	best_fit_ab = param_fit[0]
 	sigma_ab = param_fit[1]
 
-	fig = plot_figure(func,list_rec,best_fit_ab,sigma_ab,slot,'RECOVERED')
+	fig = plot_figure(func,list_rec,best_fit_ab,sigma_ab,slot,'RECOVERED',option)
 	st.plotly_chart(fig)
 
 
