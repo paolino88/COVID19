@@ -99,8 +99,10 @@ def main():
 	st.subheader('Exponential fit : ')
 	st.latex(r'''func = ae^{b(day)}''')
 
-	##fit infection
 	func = lambda x, a, b: a * np.exp(b * x)
+
+	##fit infection
+
 	param_fit = get_fit(func,slot,list_conf)
 	best_fit_ab = param_fit[0]
 	sigma_ab = param_fit[1]
@@ -109,7 +111,7 @@ def main():
 	st.plotly_chart(fig)
 
 	##fit death
-	func = lambda x, a, b: a * np.exp(b * x)
+
 	param_fit = get_fit(func,slot,list_death)
 	best_fit_ab = param_fit[0]
 	sigma_ab = param_fit[1]
@@ -118,7 +120,7 @@ def main():
 	st.plotly_chart(fig)
 
 	##fit recovered
-	func = lambda x, a, b: a * np.exp(b * x)
+
 	param_fit = get_fit(func,slot,list_rec)
 	best_fit_ab = param_fit[0]
 	sigma_ab = param_fit[1]
