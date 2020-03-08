@@ -1,7 +1,6 @@
 from scipy.optimize import curve_fit
 import plotly.graph_objects as go
 from uncertainties import ufloat
-import plotly_express as px
 import streamlit as st
 import urllib.request
 import pandas as pd
