@@ -8,6 +8,9 @@ verify_ssl = true
 [packages]
 streamlit = "*"
 pandas = "*"
+scipy = "*"
+plotly = "*"
+uncertainties = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7.1"
