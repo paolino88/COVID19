@@ -377,7 +377,9 @@
             "version": "==1.12.0"
         },
         "streamlit": {
-
+            "hashes": [
+                "sha256:6747cdb653d54ccbaaa7343912d187ae644aa1b66aa537dc63bb20e847fa22bc"
+            ],
             "index": "pypi",
             "version": "==0.51.0"
         },
