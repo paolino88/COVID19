@@ -1,21 +1,14 @@
+from scipy.optimize import curve_fit
+import plotly.graph_objects as go
+from uncertainties import ufloat
+import plotly_express as px
 import streamlit as st
 import urllib.request
 import pandas as pd
+import numpy as np
 import datetime
 import re
 
-def get_death(file):
-	url_death = 'https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/' \
-				+ file
-	with urllib.request.urlopen(url_death) as testfile, open('dataset.csv', 'w') as f:
-		f.write(testfile.read().decode())
-
-	f = open("dataset.csv", "r")
-	xml=f.read()
-	date = re.findall(r'.*<th>([\s+<th>\d+\/\d+\/\d+<\/th>]+)\s+<\/tr>', xml)
-	num_d = re.findall(r'.*<td>Italy<\/td>([\s+<td>\d+<\/td>]+)\s+<\/tr>',xml)
-	list_date = re.findall(r'(\d+\/\d+\/\d+)',date[0])
-	list_death = re.findall(r'\d+',num_d[0])[2:]
 
 def get_date_num(file):
 	url_death = 'https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/' \
@@ -32,6 +25,36 @@ def get_date_num(file):
 	list_date = [datetime.datetime.strptime(x, '%m/%d/%y').strftime('%m/%d/%y') for x in list_dat]
 	list_num = [int(x) for x in list_n]
 	return list_date, list_num
+
+
+def get_fit(func,slot,list_conf):
+	best_fit_ab, covar = curve_fit(func, slot, list_conf)
+	sigma_ab = np.sqrt(np.diagonal(covar))
+	return best_fit_ab, sigma_ab
+
+
+def plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,kind):
+	a = ufloat(best_fit_ab[0], sigma_ab[0])
+	b = ufloat(best_fit_ab[1], sigma_ab[1])
+
+	bound_upper = func(slot, *(best_fit_ab + sigma_ab))
+	bound_lower = func(slot, *(best_fit_ab - sigma_ab))
+
+	text_res = "Best fit parameters on the " + str(max(slot)) + "th for " + kind + " :\na = {}\nb = {}".format(a, b)
+	st.text(text_res)
+
+	fig = go.Figure()
+	fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name=kind,line_color='black'))
+	fig.add_trace(go.Scatter(x=slot, y=bound_upper, fill='tonexty', mode='lines', line_color='grey',showlegend=False))
+	fig.add_trace(go.Scatter(x=slot, y=bound_lower, fill='tonexty',mode='lines', name='Error',line_color='grey'))
+	fig.add_trace(go.Scatter(x=slot, y=func(slot, *best_fit_ab), mode='lines', name='Fit Exp',line_color='red'))
+
+	fig.update_layout(xaxis_title="day")
+
+	predict = func(max(slot)+1, *best_fit_ab)
+	st.error('Forecast for ' + str(max(slot)+1) + 'th day on ' + kind + ' = ' + str(int(round(predict))))
+
+	return fig
 
 
 def main():
@@ -57,7 +80,7 @@ def main():
 	list_r = list_rec[:lung_data]
 
 	list_conf = [x for x in list_c if x != 0]
-	n_start = len(list_c)-len(list_conf)
+	#n_start = len(list_c)-len(list_conf)
 
 	list_conf = list_c[30:]
 	list_death = list_d[30:]
@@ -67,14 +90,41 @@ def main():
 	dict_el = {'1-INFECTED' : list_conf,'2-RECOVERD' : list_rec,'3-DEATHS' : list_death}
 	df = pd.DataFrame(dict_el, index = list_dates)
 	st.text('')
+
 	st.bar_chart(df)
 
+	slot = np.arange(1, len(list_dates)+1)
 
+	##fit Exponential
+	st.subheader('Exponential fit : ')
+	st.latex(r'''func = ae^{b(day)}''')
 
+	##fit infection
+	func = lambda x, a, b: a * np.exp(b * x)
+	param_fit = get_fit(func,slot,list_conf)
+	best_fit_ab = param_fit[0]
+	sigma_ab = param_fit[1]
 
+	fig = plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,'INFECTION')
+	st.plotly_chart(fig)
 
+	##fit death
+	func = lambda x, a, b: a * np.exp(b * x)
+	param_fit = get_fit(func,slot,list_death)
+	best_fit_ab = param_fit[0]
+	sigma_ab = param_fit[1]
 
+	fig = plot_figure(func,list_death,best_fit_ab,sigma_ab,slot,'DEATH')
+	st.plotly_chart(fig)
 
+	##fit recovered
+	func = lambda x, a, b: a * np.exp(b * x)
+	param_fit = get_fit(func,slot,list_rec)
+	best_fit_ab = param_fit[0]
+	sigma_ab = param_fit[1]
+
+	fig = plot_figure(func,list_rec,best_fit_ab,sigma_ab,slot,'RECOVERED')
+	st.plotly_chart(fig)
 
 
 
