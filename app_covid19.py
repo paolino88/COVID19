@@ -32,25 +32,25 @@ def get_fit(func,slot,list_conf):
 	return best_fit_ab, sigma_ab
 
 
-def plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,kind,option):
-	a = ufloat(best_fit_ab[0], sigma_ab[0])
-	b = ufloat(best_fit_ab[1], sigma_ab[1])
+def plot_figure(func,list_conf,best_fit_a_b,sigma_a_b,slot,kind,option):
+	a = ufloat(best_fit_a_b[0], sigma_a_b[0])
+	b = ufloat(best_fit_a_b[1], sigma_a_b[1])
 
-	bound_upper = func(slot, *(best_fit_ab + sigma_ab))
-	bound_lower = func(slot, *(best_fit_ab - sigma_ab))
+	bound_upper = func(slot, *(best_fit_a_b + sigma_a_b))
+	bound_lower = func(slot, *(best_fit_a_b - sigma_a_b))
 
 	text_res = "Best fit parameters on the " + str(max(slot)) + "th for " + kind + " :\na = {}\nb = {}".format(a, b)
 	st.text(text_res)
 
 	fig = go.Figure()
 	fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name=kind,line_color='black'))
-	fig.add_trace(go.Scatter(x=slot, y=bound_upper, fill='tonexty', mode='lines', line_color='grey',showlegend=False))
+	fig.add_trace(go.Scatter(x=slot, y=bound_upper, mode='lines', line_color='grey',showlegend=False))
 	fig.add_trace(go.Scatter(x=slot, y=bound_lower, fill='tonexty',mode='lines', name='Error',line_color='grey'))
-	fig.add_trace(go.Scatter(x=slot, y=func(slot, *best_fit_ab), mode='lines', name='Fit '+ option,line_color='red'))
+	fig.add_trace(go.Scatter(x=slot, y=func(slot, *best_fit_a_b), mode='lines', name='Fit '+ option,line_color='red'))
 
 	fig.update_layout(xaxis_title="day")
 
-	predict = func(max(slot)+1, *best_fit_ab)
+	predict = func(max(slot)+1, *best_fit_a_b)
 	st.error('Forecast for ' + str(max(slot)+1) + 'th day on ' + kind + ' = ' + str(int(round(predict))))
 
 	return fig
@@ -82,10 +82,10 @@ def main():
 	list_conf = [x for x in list_c if x != 0]
 	#n_start = len(list_c)-len(list_conf)
 
-	list_conf = list_c[30:]
-	list_death = list_d[30:]
-	list_rec = list_r[30:]
-	list_dates = list_date[30:]
+	list_conf = list_c[31:]
+	list_death = list_d[31:]
+	list_rec = list_r[31:]
+	list_dates = list_date[31:]
 
 	dict_el = {'1-INFECTED' : list_conf,'2-RECOVERD' : list_rec,'3-DEATHS' : list_death}
 	df = pd.DataFrame(dict_el, index = list_dates)
@@ -109,40 +109,66 @@ def main():
 		st.subheader('Gompertz fit : ')
 		st.latex(r'''func = a*exp\left\{ ln\left(\frac{N(day=1)}{a} \right) e^{-b(day)} \right\}''')
 		c = 1
-		func = lambda x, a, b : a * np.exp(np.log(c/a) * np.exp(-b*(x-1)))
+		func = lambda x, a, b : a * np.exp(np.log(c/a) * np.exp(-b*(x)))
 	else:
 		st.subheader('Logistic fit : ')
 		st.latex(r'''func = N(day = 1) \frac{e^{b(day)}}{1-\frac{N(day=1)}{a}\left[ 1-e^{b(day)}\right]}''')
 		c = 1
-		func = lambda x, a, b: c * np.exp(b * x)/(1-(c/a)*(1-np.exp(b * x)))
+		func = lambda x, a, b: c * np.exp(b * (x))/(1-(c/a)*(1-np.exp(b * (x))))
 
 
 	##fit infection
 	c = list_conf[0]
-	param_fit = get_fit(func,slot,list_conf)
-	best_fit_ab = param_fit[0]
-	sigma_ab = param_fit[1]
-
-	fig = plot_figure(func,list_conf,best_fit_ab,sigma_ab,slot,'INFECTION',option)
-	st.plotly_chart(fig)
+	param_fit_inf = get_fit(func,slot,list_conf)
+	best_fit_ab_inf = param_fit_inf[0]
+	sigma_ab_inf = param_fit_inf[1]
+	if sigma_ab_inf[0] < 10**30:
+		fig = plot_figure(func,list_conf,best_fit_ab_inf,sigma_ab_inf,slot,'INFECTION',option)
+		st.plotly_chart(fig)
 
 	##fit death
-	c = list_death[0]
-	param_fit = get_fit(func,slot,list_death)
-	best_fit_ab = param_fit[0]
-	sigma_ab = param_fit[1]
-
-	fig = plot_figure(func,list_death,best_fit_ab,sigma_ab,slot,'DEATH',option)
-	st.plotly_chart(fig)
+	c = list_death[2]
+	param_fit_d = get_fit(func,slot,list_death)
+	best_fit_ab_d = param_fit_d[0]
+	sigma_ab_d = param_fit_d[1]
+	if sigma_ab_d[0] < 10**30:
+		fig = plot_figure(func,list_death,best_fit_ab_d,sigma_ab_d,slot,'DEATH',option)
+		st.plotly_chart(fig)
 
 	##fit recovered
-	c = list_rec[3]
+	c = list_rec[0]
 	param_fit = get_fit(func,slot,list_rec)
 	best_fit_ab = param_fit[0]
 	sigma_ab = param_fit[1]
+	if sigma_ab[0] < 10**30:
+		fig = plot_figure(func,list_rec,best_fit_ab,sigma_ab,slot,'RECOVERED',option)
+		st.plotly_chart(fig)
 
-	fig = plot_figure(func,list_rec,best_fit_ab,sigma_ab,slot,'RECOVERED',option)
-	st.plotly_chart(fig)
+	st.subheader('Peak Prediction and Arrest for the Infection ' + option)
+
+	aa = 10
+	bb = 100
+	c = list_conf[0]
+	slot_ricors = slot
+	if option == 'Gompertz Law' or option == 'Logistic Law':
+		while(bb - aa > 10):
+			slot_aa = slot_ricors
+			slot_bb = np.append(slot_ricors,max(slot_ricors)+1)
+			aa = func(slot_aa, *best_fit_ab_inf)[-1]
+			bb = func(slot_bb, *best_fit_ab_inf)[-1]
+			slot_ricors = np.append(slot_ricors,max(slot_ricors)+1)
+		list_y = func(slot_ricors, *best_fit_ab_inf)
+
+
+		fig = go.Figure()
+		fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name='INFECTION', line_color='black'))
+		fig.add_trace(go.Scatter(x=slot_ricors, y=list_y,
+								 mode='lines', name='Fit ' + option, line_color='red'))
+		fig.update_layout(xaxis_title="day", yaxis_title = "INFECTED")
+		st.plotly_chart(fig)
+	else:
+		st.error('If the society does not take due'
+				' precautions with social isolation, the Exponential trend can only diverge')
 
 
 
