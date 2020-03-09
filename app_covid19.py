@@ -82,10 +82,13 @@ def main():
 	list_conf = [x for x in list_c if x != 0]
 	#n_start = len(list_c)-len(list_conf)
 
-	list_conf = list_c[31:]
+	list_conf2 = list_c[31:]
 	list_death = list_d[31:]
 	list_rec = list_r[31:]
 	list_dates = list_date[31:]
+
+	list_conf1 = [x1 - x2 for (x1, x2) in zip(list_conf2, list_rec)]
+	list_conf = [x1 - x2 for (x1, x2) in zip(list_conf1, list_death)]
 
 	dict_el = {'1-INFECTED' : list_conf,'2-RECOVERD' : list_rec,'3-DEATHS' : list_death}
 	df = pd.DataFrame(dict_el, index = list_dates)
