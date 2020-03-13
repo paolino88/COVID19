@@ -118,7 +118,7 @@ def main():
 
 
 
-    slot = np.arange(2, len(list_dates))
+    slot = np.arange(1, len(list_dates)+1)
 
     #func = lambda x, a, b: a * np.exp(b * (x - 1))
     list_tamponi = get_date_num('tamponi')[1]
@@ -127,7 +127,7 @@ def main():
     #sigma_ab_tamponi = param_fit_tamponi[1]
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=slot, y=list_tamponi, mode='markers', line_color='orange'))
-    fig.update_layout(yaxis_title="Tamponi", xaxis_title="day from 22.02")
+    fig.update_layout(yaxis_title="Tamponi", xaxis_title="day from 24.02")
     st.plotly_chart(fig)
 
     #func = lambda x, a, b: a * np.exp(b * (x - 1))
@@ -140,9 +140,9 @@ def main():
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=slot, y=list_ricoverati, mode='markers', name='Ricoverati con sintomi',line_color='black'))
     fig.add_trace(go.Scatter(x=slot, y=list_terapia, mode='markers',name='Terapia Intensiva' ,line_color='red'))
-    fig.add_trace(go.Scatter(x=slot, y=list_death, mode='markers', name='Deceduti', line_color='grey'))
+    fig.add_trace(go.Scatter(x=slot, y=list_death[2:], mode='markers', name='Deceduti', line_color='grey'))
     #fig.add_trace(go.Scatter(x=slot, y=ratio, mode='lines', name='Ratio Death/Terapia_Intensiva', line_color='blue'))
-    fig.update_layout( xaxis_title="day from 22.02")
+    fig.update_layout( xaxis_title="day from 24.02")
     st.plotly_chart(fig)
 
 
