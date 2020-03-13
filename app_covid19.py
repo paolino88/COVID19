@@ -86,6 +86,7 @@ def main():
     list_rec.insert(0, 1)
 
 
+
     #list_len_date = [len(list_date1), len(list_date2), len(list_date3)]
     #list_li_date = [list_date1, list_date2, list_date3]
     #el_min = min([len(list_date1), len(list_date2), len(list_date3)])
@@ -113,6 +114,40 @@ def main():
     st.text('')
 
     st.bar_chart(df)
+
+
+
+
+    slot = np.arange(2, len(list_dates))
+
+    #func = lambda x, a, b: a * np.exp(b * (x - 1))
+    list_tamponi = get_date_num('tamponi')[1]
+    #param_fit_tamponi = get_fit(func, slot, list_tamponi)
+    #best_fit_ab_tamponi = param_fit_tamponi[0]
+    #sigma_ab_tamponi = param_fit_tamponi[1]
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=slot, y=list_tamponi, mode='markers', line_color='orange'))
+    fig.update_layout(yaxis_title="Tamponi", xaxis_title="day from 22.02")
+    st.plotly_chart(fig)
+
+    #func = lambda x, a, b: a * np.exp(b * (x - 1))
+    list_terapia = get_date_num('terapia_intensiva')[1]
+    list_ricoverati = get_date_num('ricoverati_con_sintomi')[1]
+    #param_fit_tamponi = get_fit(func, slot, list_tamponi)
+    #best_fit_ab_tamponi = param_fit_tamponi[0]
+    #sigma_ab_tamponi = param_fit_tamponi[1]
+    ratio = [1.0*x1/x2 for x1, x2 in zip(list_death, list_terapia)]
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=slot, y=list_ricoverati, mode='markers', name='Ricoverati con sintomi',line_color='black'))
+    fig.add_trace(go.Scatter(x=slot, y=list_terapia, mode='markers',name='Terapia Intensiva' ,line_color='red'))
+    fig.add_trace(go.Scatter(x=slot, y=list_death, mode='markers', name='Deceduti', line_color='grey'))
+    #fig.add_trace(go.Scatter(x=slot, y=ratio, mode='lines', name='Ratio Death/Terapia_Intensiva', line_color='blue'))
+    fig.update_layout( xaxis_title="day from 22.02")
+    st.plotly_chart(fig)
+
+
+
+
 
     slot = np.arange(1, len(list_dates) + 1)
 
