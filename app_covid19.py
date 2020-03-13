@@ -115,10 +115,17 @@ def main():
 
     st.bar_chart(df)
 
-
-
+    delta_conf = [x2-x1 for x1,x2 in zip(list_conf[:len(list_conf)-1],list_conf[1:])]
 
     slot = np.arange(1, len(list_dates)+1)
+
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=slot, y=delta_conf, mode='markers', showlegend=False,line_color='red'))
+    fig.add_trace(go.Scatter(x=slot, y=delta_conf, mode='lines',showlegend=False, line_color='red'))
+    fig.update_layout(yaxis_title="Delta_Positivi", xaxis_title="day from 23.02")
+    st.plotly_chart(fig)
+
 
     #func = lambda x, a, b: a * np.exp(b * (x - 1))
     list_tamponi = get_date_num('tamponi')[1]
