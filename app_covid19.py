@@ -137,15 +137,17 @@ def main():
     fig.update_layout(yaxis_title="Tamponi", xaxis_title="day from 24.02")
     st.plotly_chart(fig)
 
-    #func = lambda x, a, b: a * np.exp(b * (x - 1))
+    func = lambda x, a, b: a * np.exp(b * (x - 1))
     list_terapia = get_date_num('terapia_intensiva')[1]
     list_ricoverati = get_date_num('ricoverati_con_sintomi')[1]
-    #param_fit_tamponi = get_fit(func, slot, list_tamponi)
-    #best_fit_ab_tamponi = param_fit_tamponi[0]
-    #sigma_ab_tamponi = param_fit_tamponi[1]
+    param_fit_ricoveri = get_fit(func, slot[2:], list_ricoverati)
+    best_fit_ab_ricoveri = param_fit_ricoveri[0]
+    sigma_ab_ricoveri = param_fit_ricoveri[1]
     ratio = [1.0*x1/x2 for x1, x2 in zip(list_death, list_terapia)]
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=slot, y=list_ricoverati, mode='markers', name='Ricoverati con sintomi',line_color='black'))
+    fig.add_trace(go.Scatter(x=slot, y=func(slot[2:], *best_fit_ab_ricoveri), mode='lines', name='Exp',
+                             line_color='black'))
     fig.add_trace(go.Scatter(x=slot, y=list_terapia, mode='markers',name='Terapia Intensiva' ,line_color='red'))
     fig.add_trace(go.Scatter(x=slot, y=list_death[2:], mode='markers', name='Deceduti', line_color='grey'))
     #fig.add_trace(go.Scatter(x=slot, y=ratio, mode='lines', name='Ratio Death/Terapia_Intensiva', line_color='blue'))
@@ -186,8 +188,22 @@ def main():
     param_fit_inf = get_fit(func, slot, list_conf)
     best_fit_ab_inf = param_fit_inf[0]
     sigma_ab_inf = param_fit_inf[1]
+
+        ##add compare 13.03
+    import datetime
+    x = datetime.datetime.now()
+    d = int(x.strftime("%d"))
+    param_fit_inf0 = get_fit(func, slot[:len(slot) - (d-13)], list_conf[:len(list_conf) - (d-13)])
+    best_fit_ab_inf0 = param_fit_inf0[0]
+
+
+
     if sigma_ab_inf[0]/best_fit_ab_inf[0] < 0.3 or sigma_ab_inf[1]/best_fit_ab_inf[1] < 0.3:
         fig = plot_figure(func, list_conf, best_fit_ab_inf, sigma_ab_inf, slot, 'INFECTION', option)
+        fig.add_trace(
+            go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_inf0),
+                       line=dict(color='black', width=2, dash='dash'), name='fit in 13.03', line_color='blue'))
+
         st.plotly_chart(fig)
 
     ##fit death
@@ -195,8 +211,16 @@ def main():
     param_fit_d = get_fit(func, slot, list_death)
     best_fit_ab_d = param_fit_d[0]
     sigma_ab_d = param_fit_d[1]
+
+        ##compare 13.03
+    param_fit_d0 = get_fit(func, slot[:len(slot) - (d-13)], list_death[:len(list_death) - (d-13)])
+    best_fit_ab_d0 = param_fit_d0[0]
+
     if sigma_ab_d[0]/best_fit_ab_d[0] < 0.3 or sigma_ab_d[1]/best_fit_ab_d[1] < 0.3:
         fig = plot_figure(func, list_death, best_fit_ab_d, sigma_ab_d, slot, 'DEATH', option)
+        fig.add_trace(
+            go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_d0),
+                       line=dict(color='black', width=2, dash='dash'), name='fit in 13.03', line_color='blue'))
         st.plotly_chart(fig)
 
     ##fit recovered
@@ -215,7 +239,7 @@ def main():
     c = list_conf[0]
     slot_ricors = slot
     if option == 'Gompertz Law' or option == 'Logistic Law':
-        while (bb - aa > 1):
+        while (bb - aa > 20):
             slot_aa = slot_ricors
             slot_bb = np.append(slot_ricors, max(slot_ricors) + 1)
             aa = func(slot_aa, *best_fit_ab_inf)[-1]
@@ -229,7 +253,8 @@ def main():
         fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name='INFECTION', line_color='black'))
         fig.add_trace(go.Scatter(x=slot_ricors, y=list_y,
                                  mode='lines', name='Fit ' + option, line_color='red'))
-
+        fig.add_trace(go.Scatter(x=slot_ricors, y=func(slot_ricors, *best_fit_ab_inf0),
+                                 line=dict(color='black', width=2, dash='dash'), name='Fit 13.03', line_color='blue'))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_upper, mode='lines', line_color='grey', showlegend=False))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
 
