@@ -202,7 +202,8 @@ def main():
         fig = plot_figure(func, list_conf, best_fit_ab_inf, sigma_ab_inf, slot, 'INFECTION', option)
         fig.add_trace(
             go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_inf0),
-                       line=dict(color='black', width=2, dash='dash'), name='fit in 13.03', line_color='blue'))
+                       line=dict(color='black', width=2, dash='dash'), name='fit done '+ str(d-13)+' days before',
+                       line_color='blue'))
 
         st.plotly_chart(fig)
 
@@ -220,7 +221,8 @@ def main():
         fig = plot_figure(func, list_death, best_fit_ab_d, sigma_ab_d, slot, 'DEATH', option)
         fig.add_trace(
             go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_d0),
-                       line=dict(color='black', width=2, dash='dash'), name='fit in 13.03', line_color='blue'))
+                       line=dict(color='black', width=2, dash='dash'), name='fit done '+ str(d-13)+' days before',
+                       line_color='blue'))
         st.plotly_chart(fig)
 
     ##fit recovered
@@ -254,7 +256,8 @@ def main():
         fig.add_trace(go.Scatter(x=slot_ricors, y=list_y,
                                  mode='lines', name='Fit ' + option, line_color='red'))
         fig.add_trace(go.Scatter(x=slot_ricors, y=func(slot_ricors, *best_fit_ab_inf0),
-                                 line=dict(color='black', width=2, dash='dash'), name='Fit 13.03', line_color='blue'))
+                                 line=dict(color='black', width=2, dash='dash'), name='Fit done '+str(d-13)+' days before',
+                                 line_color='blue'))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_upper, mode='lines', line_color='grey', showlegend=False))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
 
