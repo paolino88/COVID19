@@ -126,16 +126,140 @@ def main():
     fig.update_layout(yaxis_title="Delta_Positivi", xaxis_title="day from 23.02")
     st.plotly_chart(fig)
 
+    slot1=np.array([x+2 for x in slot])
 
+    ####################################################################################
     #func = lambda x, a, b: a * np.exp(b * (x - 1))
     list_tamponi = get_date_num('tamponi')[1]
     #param_fit_tamponi = get_fit(func, slot, list_tamponi)
     #best_fit_ab_tamponi = param_fit_tamponi[0]
     #sigma_ab_tamponi = param_fit_tamponi[1]
+
+    #####
+    func = lambda x, a, b: a*x+b
+    param_fit_tam = get_fit(func, slot1[15:-2], list_tamponi[15:])
+    best_fit_ab_tam = param_fit_tam[0]
+    #####
+
+#    best_fit_ab_tam
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=slot, y=list_tamponi, mode='markers', line_color='orange'))
-    fig.update_layout(yaxis_title="Tamponi", xaxis_title="day from 24.02")
+    fig.add_trace(go.Scatter(x=slot1, y=list_tamponi, mode='markers',name='Tamponi' ,line_color='orange'))
+#    fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name='Positivi',line_color='black'))
+#    fig.add_trace(go.Scatter(x=slot1[15:-2], y=func(slot1[15:-2], *best_fit_ab_tam), name='Linear Fit',
+#                             line=dict(color='blue', width=1, dash='dash'), line_color='blue'))
+    fig.update_layout( xaxis_title="day from 22.02", yaxis_title='Swabs')
     st.plotly_chart(fig)
+
+    ##Fit Ratio
+    #func = lambda x, a, b: a*(x**b)
+    #func = lambda x, a, b: c * np.exp(b * (x)) / (1 - (c / a) * (1 - np.exp(b * (x))))
+    func = lambda x, a, b: a*x+b
+    ratio = [1.0 * x1 / x2 for x1, x2 in zip(list_conf[2:], list_tamponi)]
+    param_fit_ratio = get_fit(func, slot[3:], ratio[1:])
+    best_fit_ab_ratio = param_fit_ratio[0]
+    sigma_ab_ratio = param_fit_ratio[1]
+
+
+ #   bound_upper = func(slot[3:], *(best_fit_ab_ratio + sigma_ab_ratio))
+ #   bound_lower = func(slot[3:], *(best_fit_ab_ratio - sigma_ab_ratio))
+ #   best_fit_ab_ratio
+ #   fig = go.Figure()
+#    fig.add_trace(go.Scatter(x=slot[3:], y=ratio[1:], mode='markers', name='Positivi/Tamponi',line_color='red'))
+#    fig.add_trace(go.Scatter(x=slot[3:], y=bound_upper, mode='lines', line_color='grey', showlegend=False))
+#    fig.add_trace(go.Scatter(x=slot[3:], y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
+#    fig.add_trace(go.Scatter(x=slot[3:], y=func(slot[3:], *best_fit_ab_ratio), mode='lines',
+#                             name=str(round(best_fit_ab_ratio[0],3))+'*x + '+str(round(best_fit_ab_ratio[1],3)),line_color='red'))
+#    fig.update_layout( xaxis_title="day from 22.02" , yaxis_title='Ratio Infected/Swabs')
+#    st.plotly_chart(fig)
+
+
+    ##Tamponi
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=slot1[15:-2], y=list_tamponi[15:], mode='markers',marker=dict(size=[12]*len(slot1[15:-2])),
+                             name='Tamponi' ,line_color='orange'))
+#    fig.add_trace(go.Scatter(x=slot1[15:-2], y=func(slot1[15:-2], 12795, -170197),
+#                             line=dict(color='blue', width=2, dash='dash'), name='Linear Fit'))
+    fig.update_layout(xaxis_title="days form 10.03" , #xaxis = dict(
+#        tickmode = 'array',
+#        tickvals = slot1[15:-2],
+#        ticktext = ['10.03', '11.03', '12.03', '13.03','14.03','15.03','16.03','17.03']) ,
+                      yaxis_title='Swabs')
+    st.plotly_chart(fig)
+
+    ##RATIO
+
+    func = lambda x, a, b: a*x+b
+    param_fit_ratio1 = get_fit(func, slot[17:21], ratio[15:19])
+    best_fit_ab_ratio1 = param_fit_ratio1[0]
+
+    param_fit_ratio2 = get_fit(func, slot[21:-1], ratio[19:-1])
+    best_fit_ab_ratio2 = param_fit_ratio2[0]
+
+    st.subheader('I believe that the true analysis cannot be made on the absolute Infected number. '
+            'The analysis must be done in terms of the ratio of Positives to Swab, therefore as a relative number. '
+            'As can be seen, the trends of this ratio grow linearly according to the days domain, '
+            'changing slope. Declining slopes are welcome. The number of tampons increases linearly in these days,'
+                 ' as can be verified,'
+            'therefore the fact that the slope of the ratio decreases is a positive thing. '
+            'The problem is the jumps! It is evident in the graphs how frequent they are. '
+            'This in my opinion is symptomatic of various factors. Delay of swab results, '
+            'distorted results of previous swabs and/or sudden increase in epidemic, '
+                 'due to the incubation period of the disease.')
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=slot[17:], y=ratio[15:], mode='markers',marker=dict(size=[14]*len(slot[17:])) ,
+                             name='Positivi/Tamponi',line_color='red'))
+#    fig.add_trace(go.Scatter(x=slot[17:], y=func(slot[17:], *best_fit_ab_ratio1),
+#                             line=dict(color='black', width=2.5, dash='dash'), name=str(round(best_fit_ab_ratio1[0], 3))
+#                                            + '*x + ' + str(round(best_fit_ab_ratio1[1], 3))))
+#    fig.add_trace(go.Scatter(x=slot[21:], y=func(slot[21:], *best_fit_ab_ratio2),
+#                             line=dict(color='blue', width=2.5, dash='dash'), name=str(round(best_fit_ab_ratio2[0], 3))
+#                                            + '*x + ' + str(round(best_fit_ab_ratio2[1], 3))))
+
+    fig.update_layout( xaxis_title="days from 10.03", #xaxis = dict(
+        #tickmode = 'array',
+        #tickvals = slot[17:],
+        #ticktext = ['10.03', '11.03', '12.03', '13.03','14.03','15.03','16.03','17.03']) ,
+                       yaxis_title='Ratio Infected/Swabs')
+    st.plotly_chart(fig)
+
+
+
+    ##SQUARE
+#    func = lambda x, a, b, c : a*x**2 + b*x + c
+#    param_fit_ratio1 = get_fit(func, slot[12:21], list_conf[12:21])
+#    best_fit_ab_ratio1 = param_fit_ratio1[0]
+
+#    param_fit_ratio2 = get_fit(func, slot[21:-1], list_conf[21:-1])
+#    best_fit_ab_ratio2 = param_fit_ratio2[0]
+
+#    slot11 = np.append(slot[21:],np.array([26,27,28,29,30]))
+
+#    st.text('fit dashed black')
+#    best_fit_ab_ratio1
+#    st.text('fit dashed blue')
+#    best_fit_ab_ratio2
+
+#    fig = go.Figure()
+#    fig.add_trace(go.Scatter(x=slot[10:], y=list_conf[10:], mode='markers',marker=dict(size=[14]*len(slot[10:])) ,
+#                             name='Positivi',line_color='red'))
+#    fig.add_trace(go.Scatter(x=slot[10:], y=func(slot[10:], *best_fit_ab_ratio1),
+#                             line=dict(color='black', width=2.5, dash='dash'), name='Square Fit'))
+#    fig.add_trace(go.Scatter(x=slot11, y=func(slot11, *best_fit_ab_ratio2),
+#                            mode='lines',line_color='blue', name='Square Fit'))
+
+#    fig.update_layout( xaxis_title="day", xaxis = dict(
+#        tickmode = 'array',
+#        tickvals = slot[10:],
+#        ticktext = ['03.03','04.03','05.03','06.03','07.03','08.03','09.03', '10.03', '11.03', '12.03', '13.03',
+#                    '14.03','15.03','16.03','17.03','18.03','19.03','20.03']) ,
+#                       yaxis_title='Infected')
+#    st.plotly_chart(fig)
+
+
+    ###############################################################################
+
+
 
     func = lambda x, a, b: a * np.exp(b * (x - 1))
     list_terapia = get_date_num('terapia_intensiva')[1]
