@@ -341,7 +341,7 @@ def main():
     param_fit_d0 = get_fit(func, slot[:len(slot) - (d-13)], list_death[:len(list_death) - (d-13)])
     best_fit_ab_d0 = param_fit_d0[0]
 
-    if sigma_ab_d[0]/best_fit_ab_d[0] < 0.3 or sigma_ab_d[1]/best_fit_ab_d[1] < 0.3:
+    if sigma_ab_d[0]/best_fit_ab_d[0] < 0.3 and sigma_ab_d[1]/best_fit_ab_d[1] < 0.3:
         fig = plot_figure(func, list_death, best_fit_ab_d, sigma_ab_d, slot, 'DEATH', option)
         fig.add_trace(
             go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_d0),
