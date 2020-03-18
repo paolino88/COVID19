@@ -195,16 +195,16 @@ def main():
     param_fit_ratio2 = get_fit(func, slot[21:-1], ratio[19:-1])
     best_fit_ab_ratio2 = param_fit_ratio2[0]
 
-    st.subheader('I believe that the true analysis cannot be made on the absolute Infected number. '
-            'The analysis must be done in terms of the ratio of Positives to Swab, therefore as a relative number. '
-            'As can be seen, the trends of this ratio grow linearly according to the days domain, '
-            'changing slope. Declining slopes are welcome. The number of tampons increases linearly in these days,'
-                 ' as can be verified,'
-            'therefore the fact that the slope of the ratio decreases is a positive thing. '
-            'The problem is the jumps! It is evident in the graphs how frequent they are. '
-            'This in my opinion is symptomatic of various factors. Delay of swab results, '
-            'distorted results of previous swabs and/or sudden increase in epidemic, '
-                 'due to the incubation period of the disease.')
+#    st.subheader('I believe that the true analysis cannot be made on the absolute Infected number. '
+#            'The analysis must be done in terms of the ratio of Positives to Swab, therefore as a relative number. '
+#            'As can be seen, the trends of this ratio grow linearly according to the days domain, '
+#            'changing slope. Declining slopes are welcome. The number of tampons increases linearly in these days,'
+#                 ' as can be verified,'
+#            'therefore the fact that the slope of the ratio decreases is a positive thing. '
+#            'The problem is the jumps! It is evident in the graphs how frequent they are. '
+#            'This in my opinion is symptomatic of various factors. Delay of swab results, '
+#            'distorted results of previous swabs and/or sudden increase in epidemic, '
+#                 'due to the incubation period of the disease.')
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=slot[17:], y=ratio[15:], mode='markers',marker=dict(size=[14]*len(slot[17:])) ,
