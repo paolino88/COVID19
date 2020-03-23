@@ -317,7 +317,7 @@ def main():
     import datetime
     x = datetime.datetime.now()
     d = int(x.strftime("%d"))
-    param_fit_inf0 = get_fit(func, slot[:len(slot) - (d-13)], list_conf[:len(list_conf) - (d-13)])
+    param_fit_inf0 = get_fit(func, slot[:len(slot) - (d-18)], list_conf[:len(list_conf) - (d-18)])
     best_fit_ab_inf0 = param_fit_inf0[0]
 
 
@@ -326,7 +326,7 @@ def main():
         fig = plot_figure(func, list_conf, best_fit_ab_inf, sigma_ab_inf, slot, 'INFECTION', option)
         fig.add_trace(
             go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_inf0),
-                       line=dict(color='black', width=2, dash='dash'), name='fit done '+ str(d-13)+' days before',
+                       line=dict(color='black', width=2, dash='dash'), name='fit done '+ str(d-18)+' days before',
                        line_color='blue'))
 
         st.plotly_chart(fig)
@@ -338,14 +338,14 @@ def main():
     sigma_ab_d = param_fit_d[1]
 
         ##compare 13.03
-    param_fit_d0 = get_fit(func, slot[:len(slot) - (d-13)], list_death[:len(list_death) - (d-13)])
+    param_fit_d0 = get_fit(func, slot[:len(slot) - (d-18)], list_death[:len(list_death) - (d-18)])
     best_fit_ab_d0 = param_fit_d0[0]
 
     if sigma_ab_d[0]/best_fit_ab_d[0] < 0.3 and sigma_ab_d[1]/best_fit_ab_d[1] < 0.3:
         fig = plot_figure(func, list_death, best_fit_ab_d, sigma_ab_d, slot, 'DEATH', option)
         fig.add_trace(
             go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_d0),
-                       line=dict(color='black', width=2, dash='dash'), name='fit done '+ str(d-13)+' days before',
+                       line=dict(color='black', width=2, dash='dash'), name='fit done '+ str(d-18)+' days before',
                        line_color='blue'))
         st.plotly_chart(fig)
 
@@ -380,7 +380,7 @@ def main():
         fig.add_trace(go.Scatter(x=slot_ricors, y=list_y,
                                  mode='lines', name='Fit ' + option, line_color='red'))
         fig.add_trace(go.Scatter(x=slot_ricors, y=func(slot_ricors, *best_fit_ab_inf0),
-                                 line=dict(color='black', width=2, dash='dash'), name='Fit done '+str(d-13)+' days before',
+                                 line=dict(color='black', width=2, dash='dash'), name='Fit done '+str(d-18)+' days before',
                                  line_color='blue'))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_upper, mode='lines', line_color='grey', showlegend=False))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
