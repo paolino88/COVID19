@@ -61,7 +61,10 @@ def plot_figure(func, list_conf, best_fit_a_b, sigma_a_b, slot, kind, option):
     fig.add_trace(go.Scatter(x=slot, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
     fig.add_trace(go.Scatter(x=slot, y=func(slot, *best_fit_a_b), mode='lines', name='Fit ' + option, line_color='red'))
 
-    fig.update_layout(xaxis_title="day")
+    fig.update_layout( xaxis_title="days", xaxis = dict(
+    tickmode = 'array',
+    tickvals = slot,
+    ticktext = [str(x)+'.02' for x in range(22,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]))
 
     predict = func(max(slot) + 1, *best_fit_a_b)
     st.error('Forecast for ' + str(max(slot) + 1) + 'th day on ' + kind + ' = ' + str(int(round(predict))))
@@ -123,7 +126,23 @@ def main():
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=slot, y=delta_conf, mode='markers', showlegend=False,line_color='red'))
     fig.add_trace(go.Scatter(x=slot, y=delta_conf, mode='lines',showlegend=False, line_color='red'))
-    fig.update_layout(yaxis_title="Delta_Positivi", xaxis_title="day from 23.02")
+    fig.update_layout( xaxis_title="days", xaxis = dict(
+    tickmode = 'array',
+    tickvals = slot,
+    ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), xaxis_title="Delta Positivi")
+
+    st.plotly_chart(fig)
+    
+    
+    delta_d=[list_death[x+1]-list_death[x] for x in range(len(list_death)-1)]
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=slot, y=delta_d, mode='markers', showlegend=False,line_color='black'))
+    fig.add_trace(go.Scatter(x=slot, y=delta_d, mode='lines',showlegend=False, line_color='black'))
+    fig.update_layout( xaxis_title="days", xaxis = dict(
+    tickmode = 'array',
+    tickvals = slot,
+    ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), xaxis_title="Delta Dead")
     st.plotly_chart(fig)
 
     slot1=np.array([x+2 for x in slot])
@@ -147,7 +166,10 @@ def main():
 #    fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name='Positivi',line_color='black'))
 #    fig.add_trace(go.Scatter(x=slot1[15:-2], y=func(slot1[15:-2], *best_fit_ab_tam), name='Linear Fit',
 #                             line=dict(color='blue', width=1, dash='dash'), line_color='blue'))
-    fig.update_layout( xaxis_title="day from 22.02", yaxis_title='Swabs')
+        fig.update_layout( xaxis_title="days", xaxis = dict(
+    tickmode = 'array',
+    tickvals = slot,
+    ticktext = [str(x)+'.02' for x in range(24,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]))
     st.plotly_chart(fig)
 
     ##Fit Ratio
@@ -179,10 +201,10 @@ def main():
                              name='Tamponi' ,line_color='orange'))
 #    fig.add_trace(go.Scatter(x=slot1[15:-2], y=func(slot1[15:-2], 12795, -170197),
 #                             line=dict(color='blue', width=2, dash='dash'), name='Linear Fit'))
-    fig.update_layout(xaxis_title="days form 10.03" , #xaxis = dict(
-#        tickmode = 'array',
-#        tickvals = slot1[15:-2],
-#        ticktext = ['10.03', '11.03', '12.03', '13.03','14.03','15.03','16.03','17.03']) ,
+    fig.update_layout(xaxis_title="days form 10.03" , xaxis = dict(
+        tickmode = 'array',
+        tickvals = slot1[15:-2],
+        ticktext = [str(x)+'.03' for x in range(11,31)]+[str(x)+'.04' for x in range(1,30)]) ,
                       yaxis_title='Swabs')
     st.plotly_chart(fig)
 
@@ -216,10 +238,10 @@ def main():
 #                             line=dict(color='blue', width=2.5, dash='dash'), name=str(round(best_fit_ab_ratio2[0], 3))
 #                                            + '*x + ' + str(round(best_fit_ab_ratio2[1], 3))))
 
-    fig.update_layout( xaxis_title="days from 10.03", #xaxis = dict(
-        #tickmode = 'array',
-        #tickvals = slot[17:],
-        #ticktext = ['10.03', '11.03', '12.03', '13.03','14.03','15.03','16.03','17.03']) ,
+    fig.update_layout( xaxis_title="days from 10.03", xaxis = dict(
+        tickmode = 'array',
+        tickvals = slot[17:],
+        ticktext = [str(x)+'.03' for x in range(11,31)]+[str(x)+'.04' for x in range(1,30)]) ,
                        yaxis_title='Ratio Infected/Swabs')
     st.plotly_chart(fig)
 
@@ -274,8 +296,12 @@ def main():
                              line_color='black'))
     fig.add_trace(go.Scatter(x=slot, y=list_terapia, mode='markers',name='Terapia Intensiva' ,line_color='red'))
     fig.add_trace(go.Scatter(x=slot, y=list_death[2:], mode='markers', name='Deceduti', line_color='grey'))
-    #fig.add_trace(go.Scatter(x=slot, y=ratio, mode='lines', name='Ratio Death/Terapia_Intensiva', line_color='blue'))
-    fig.update_layout( xaxis_title="day from 24.02")
+    #fig.add_trace(go.Scatter(x=slot, y=ratio, mode='lines', name='Ratio Death/Terapia_Intensiva', line_color='blue'))    
+    fig.update_layout( xaxis_title="days", xaxis = dict(
+    tickmode = 'array',
+    tickvals = slot,
+    ticktext = [str(x)+'.02' for x in range(24,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]))
+    
     st.plotly_chart(fig)
 
 
@@ -385,7 +411,11 @@ def main():
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_upper, mode='lines', line_color='grey', showlegend=False))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
 
-        fig.update_layout(xaxis_title="day", yaxis_title="INFECTED")
+        fig.update_layout( xaxis_title="days", xaxis = dict(
+        tickmode = 'array',
+        tickvals = slot,
+        ticktext = [str(x)+'.02' for x in range(22,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]
+            +[str(x)+'.05' for x in range(1,32)]+[str(x)+'.06' for x in range(1,31)]+[str(x)+'.07' for x in range(1,32)]), yaxis_title="Infected")
         st.plotly_chart(fig)
     else:
         st.error('If the society does not take due'
