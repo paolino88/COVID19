@@ -411,11 +411,7 @@ def main():
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_upper, mode='lines', line_color='grey', showlegend=False))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
 
-        fig.update_layout( xaxis_title="days", xaxis = dict(
-        tickmode = 'array',
-        tickvals = slot_ricors,
-        ticktext = [str(x)+'.02' for x in range(22,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]
-            +[str(x)+'.05' for x in range(1,32)]+[str(x)+'.06' for x in range(1,31)]+[str(x)+'.07' for x in range(1,32)]), yaxis_title="Infected")
+        fig.update_layout(xaxis_title="Day from 22.02", yaxis_title="INFECTED")        
         st.plotly_chart(fig)
     else:
         st.error('If the society does not take due'
