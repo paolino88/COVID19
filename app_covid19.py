@@ -168,7 +168,7 @@ def main():
 #                             line=dict(color='blue', width=1, dash='dash'), line_color='blue'))
     fig.update_layout( xaxis_title="days", xaxis = dict(
     tickmode = 'array',
-    tickvals = slot,
+    tickvals = slot1,
     ticktext = [str(x)+'.02' for x in range(24,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]))
     st.plotly_chart(fig)
 
@@ -204,7 +204,7 @@ def main():
     fig.update_layout(xaxis_title="days form 10.03" , xaxis = dict(
         tickmode = 'array',
         tickvals = slot1[15:-2],
-        ticktext = [str(x)+'.03' for x in range(11,31)]+[str(x)+'.04' for x in range(1,30)]) ,
+        ticktext = [str(x)+'.03' for x in range(10,31)]+[str(x)+'.04' for x in range(1,30)]) ,
                       yaxis_title='Swabs')
     st.plotly_chart(fig)
 
@@ -241,7 +241,7 @@ def main():
     fig.update_layout( xaxis_title="days from 10.03", xaxis = dict(
         tickmode = 'array',
         tickvals = slot[17:],
-        ticktext = [str(x)+'.03' for x in range(11,31)]+[str(x)+'.04' for x in range(1,30)]) ,
+        ticktext = [str(x)+'.03' for x in range(10,31)]+[str(x)+'.04' for x in range(1,30)]) ,
                        yaxis_title='Ratio Infected/Swabs')
     st.plotly_chart(fig)
 
@@ -291,7 +291,7 @@ def main():
     sigma_ab_ricoveri = param_fit_ricoveri[1]
     ratio = [1.0*x1/x2 for x1, x2 in zip(list_death, list_terapia)]
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=slot, y=list_ricoverati, mode='markers', name='Ricoverati con sintomi',line_color='black'))
+    fig.add_trace(go.Scatter(x=slot, y=list_ricoverati, mode='markers', name='Ricoverati',line_color='black'))
     fig.add_trace(go.Scatter(x=slot, y=func(slot[2:], *best_fit_ab_ricoveri), mode='lines', name='Exp',
                              line_color='black'))
     fig.add_trace(go.Scatter(x=slot, y=list_terapia, mode='markers',name='Terapia Intensiva' ,line_color='red'))
@@ -352,7 +352,7 @@ def main():
         fig = plot_figure(func, list_conf, best_fit_ab_inf, sigma_ab_inf, slot, 'INFECTION', option)
         fig.add_trace(
             go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_inf0),
-                       line=dict(color='black', width=2, dash='dash'), name='fit done '+ str(d-23)+' days before',
+                       line=dict(color='black', width=2, dash='dash'), name='fit '+ str(d-23)+' days before',
                        line_color='blue'))
 
         st.plotly_chart(fig)
@@ -371,7 +371,7 @@ def main():
         fig = plot_figure(func, list_death, best_fit_ab_d, sigma_ab_d, slot, 'DEATH', option)
         fig.add_trace(
             go.Scatter(x=np.array(slot[:len(slot)]), y=func(np.array(slot[:len(slot)]), *best_fit_ab_d0),
-                       line=dict(color='black', width=2, dash='dash'), name='fit done '+ str(d-23)+' days before',
+                       line=dict(color='black', width=2, dash='dash'), name='fit '+ str(d-23)+' days before',
                        line_color='blue'))
         st.plotly_chart(fig)
 
@@ -406,14 +406,14 @@ def main():
         fig.add_trace(go.Scatter(x=slot_ricors, y=list_y,
                                  mode='lines', name='Fit ' + option, line_color='red'))
         fig.add_trace(go.Scatter(x=slot_ricors, y=func(slot_ricors, *best_fit_ab_inf0),
-                                 line=dict(color='black', width=2, dash='dash'), name='Fit done '+str(d-23)+' days before',
+                                 line=dict(color='black', width=2, dash='dash'), name='Fit '+str(d-23)+' days before',
                                  line_color='blue'))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_upper, mode='lines', line_color='grey', showlegend=False))
         fig.add_trace(go.Scatter(x=slot_ricors, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
 
         fig.update_layout( xaxis_title="days", xaxis = dict(
         tickmode = 'array',
-        tickvals = slot,
+        tickvals = slot_ricors,
         ticktext = [str(x)+'.02' for x in range(22,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]
             +[str(x)+'.05' for x in range(1,32)]+[str(x)+'.06' for x in range(1,31)]+[str(x)+'.07' for x in range(1,32)]), yaxis_title="Infected")
         st.plotly_chart(fig)
