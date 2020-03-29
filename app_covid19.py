@@ -166,7 +166,7 @@ def main():
 #    fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name='Positivi',line_color='black'))
 #    fig.add_trace(go.Scatter(x=slot1[15:-2], y=func(slot1[15:-2], *best_fit_ab_tam), name='Linear Fit',
 #                             line=dict(color='blue', width=1, dash='dash'), line_color='blue'))
-        fig.update_layout( xaxis_title="days", xaxis = dict(
+    fig.update_layout( xaxis_title="days", xaxis = dict(
     tickmode = 'array',
     tickvals = slot,
     ticktext = [str(x)+'.02' for x in range(24,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]))
