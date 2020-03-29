@@ -129,7 +129,7 @@ def main():
     fig.update_layout( xaxis_title="days", xaxis = dict(
     tickmode = 'array',
     tickvals = slot,
-    ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), xaxis_title="Delta Positivi")
+    ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), yaxis_title="Delta Positivi")
 
     st.plotly_chart(fig)
     
@@ -142,7 +142,7 @@ def main():
     fig.update_layout( xaxis_title="days", xaxis = dict(
     tickmode = 'array',
     tickvals = slot,
-    ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), xaxis_title="Delta Dead")
+    ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), yaxis_title="Delta Dead")
     st.plotly_chart(fig)
 
     slot1=np.array([x+2 for x in slot])
