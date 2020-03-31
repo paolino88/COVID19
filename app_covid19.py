@@ -204,7 +204,7 @@ def main():
     fig.update_layout(xaxis_title="days form 10.03" , xaxis = dict(
         tickmode = 'array',
         tickvals = slot1[15:-2],
-        ticktext = [str(x)+'.03' for x in range(10,31)]+[str(x)+'.04' for x in range(1,30)]) ,
+        ticktext = [str(x)+'.03' for x in range(10,32)]+[str(x)+'.04' for x in range(1,31)]) ,
                       yaxis_title='Swabs')
     st.plotly_chart(fig)
 
@@ -241,7 +241,7 @@ def main():
     fig.update_layout( xaxis_title="days from 10.03", xaxis = dict(
         tickmode = 'array',
         tickvals = slot[17:],
-        ticktext = [str(x)+'.03' for x in range(10,31)]+[str(x)+'.04' for x in range(1,30)]) ,
+        ticktext = [str(x)+'.03' for x in range(10,32)]+[str(x)+'.04' for x in range(1,31)]) ,
                        yaxis_title='Ratio Infected/Swabs')
     st.plotly_chart(fig)
 
