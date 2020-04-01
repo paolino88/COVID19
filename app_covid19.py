@@ -260,7 +260,7 @@ def main():
 
 
     fig = go.Figure([go.Bar( marker=dict(color='red'),x=list_dates[17:], y=ratio[15:])])
-    fig.update_layout(yaxis_title='Swabs')
+    fig.update_layout(yaxis_title='Ratio: Positivies/Swabs')
     st.plotly_chart(fig)
 
     ##SQUARE
