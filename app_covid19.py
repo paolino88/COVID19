@@ -123,28 +123,37 @@ def main():
     slot = np.arange(1, len(list_dates)+1)
 
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=slot, y=delta_conf, mode='markers', showlegend=False,line_color='red'))
-    fig.add_trace(go.Scatter(x=slot, y=delta_conf, mode='lines',showlegend=False, line_color='red'))
-    fig.update_layout( xaxis_title="days", xaxis = dict(
-    tickmode = 'array',
-    tickvals = slot,
-    ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), yaxis_title="Delta Positivi")
+    #fig = go.Figure()
+    #fig.add_trace(go.Scatter(x=slot, y=delta_conf, mode='markers', showlegend=False,line_color='red'))
+    #fig.add_trace(go.Scatter(x=slot, y=delta_conf, mode='lines',showlegend=False, line_color='red'))
+    #fig.update_layout( xaxis_title="days", xaxis = dict(
+    #tickmode = 'array',
+    #tickvals = slot,
+    #ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), yaxis_title="Delta Positivi")
 
-    st.plotly_chart(fig)
+    #st.plotly_chart(fig)
     
     
     delta_d=[list_death[x+1]-list_death[x] for x in range(len(list_death)-1)]
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=slot, y=delta_d, mode='markers', showlegend=False,line_color='black'))
-    fig.add_trace(go.Scatter(x=slot, y=delta_d, mode='lines',showlegend=False, line_color='black'))
-    fig.update_layout( xaxis_title="days", xaxis = dict(
-    tickmode = 'array',
-    tickvals = slot,
-    ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), yaxis_title="Delta Dead")
-    st.plotly_chart(fig)
+    #fig = go.Figure()
+    #fig.add_trace(go.Scatter(x=slot, y=delta_d, mode='markers', showlegend=False,line_color='black'))
+    #fig.add_trace(go.Scatter(x=slot, y=delta_d, mode='lines',showlegend=False, line_color='black'))
+    #fig.update_layout( xaxis_title="days", xaxis = dict(
+    #tickmode = 'array',
+    #tickvals = slot,
+    #ticktext = [str(x)+'.02' for x in range(23,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]), yaxis_title="Delta Dead")
+    #st.plotly_chart(fig)
 
+    
+    fig = go.Figure(data=[
+        go.Bar(name='Delta_Positives', x=list_dates[1:], y=delta_conf),
+        go.Bar(name='Delta_Deaths', x=list_dates[1:], y=delta_d)
+    ])
+    fig.update_layout(barmode='group')
+    st.plotly_chart(fig)
+    
+    
     slot1=np.array([x+2 for x in slot])
 
     ####################################################################################
@@ -161,16 +170,16 @@ def main():
     #####
 
 #    best_fit_ab_tam
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=slot1, y=list_tamponi, mode='markers',name='Tamponi' ,line_color='orange'))
+#    fig = go.Figure()
+#    fig.add_trace(go.Scatter(x=slot1, y=list_tamponi, mode='markers',name='Tamponi' ,line_color='orange'))
 #    fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name='Positivi',line_color='black'))
 #    fig.add_trace(go.Scatter(x=slot1[15:-2], y=func(slot1[15:-2], *best_fit_ab_tam), name='Linear Fit',
 #                             line=dict(color='blue', width=1, dash='dash'), line_color='blue'))
-    fig.update_layout( xaxis_title="days", xaxis = dict(
-    tickmode = 'array',
-    tickvals = slot1,
-    ticktext = [str(x)+'.02' for x in range(24,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]))
-    st.plotly_chart(fig)
+#    fig.update_layout( xaxis_title="days", xaxis = dict(
+#    tickmode = 'array',
+#    tickvals = slot1,
+#    ticktext = [str(x)+'.02' for x in range(24,30)]+[str(x)+'.03' for x in range(1,32)]+[str(x)+'.04' for x in range(1,31)]))
+#    st.plotly_chart(fig)
 
     ##Fit Ratio
     #func = lambda x, a, b: a*(x**b)
@@ -196,17 +205,17 @@ def main():
 
 
     ##Tamponi
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=slot1[15:-2], y=list_tamponi[15:], mode='markers',marker=dict(size=[12]*len(slot1[15:-2])),
-                             name='Tamponi' ,line_color='orange'))
+#    fig = go.Figure()
+#    fig.add_trace(go.Scatter(x=slot1[15:-2], y=list_tamponi[15:], mode='markers',marker=dict(size=[12]*len(slot1[15:-2])),
+#                             name='Tamponi' ,line_color='orange'))
 #    fig.add_trace(go.Scatter(x=slot1[15:-2], y=func(slot1[15:-2], 12795, -170197),
 #                             line=dict(color='blue', width=2, dash='dash'), name='Linear Fit'))
-    fig.update_layout(xaxis_title="days form 10.03" , xaxis = dict(
-        tickmode = 'array',
-        tickvals = slot1[15:-2],
-        ticktext = [str(x)+'.03' for x in range(10,32)]+[str(x)+'.04' for x in range(1,31)]) ,
-                      yaxis_title='Swabs')
-    st.plotly_chart(fig)
+#    fig.update_layout(xaxis_title="days form 10.03" , xaxis = dict(
+#        tickmode = 'array',
+#        tickvals = slot1[15:-2],
+#        ticktext = [str(x)+'.03' for x in range(10,32)]+[str(x)+'.04' for x in range(1,31)]) ,
+#                      yaxis_title='Swabs')
+#    st.plotly_chart(fig)
 
     ##RATIO
 
@@ -228,24 +237,31 @@ def main():
 #            'distorted results of previous swabs and/or sudden increase in epidemic, '
 #                 'due to the incubation period of the disease.')
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=slot[17:], y=ratio[15:], mode='markers',marker=dict(size=[14]*len(slot[17:])) ,
-                             name='Positivi/Tamponi',line_color='red'))
+#    fig = go.Figure()
+#    fig.add_trace(go.Scatter(x=slot[17:], y=ratio[15:], mode='markers',marker=dict(size=[14]*len(slot[17:])) ,
+#                             name='Positivi/Tamponi',line_color='red'))
 #    fig.add_trace(go.Scatter(x=slot[17:], y=func(slot[17:], *best_fit_ab_ratio1),
 #                             line=dict(color='black', width=2.5, dash='dash'), name=str(round(best_fit_ab_ratio1[0], 3))
 #                                            + '*x + ' + str(round(best_fit_ab_ratio1[1], 3))))
 #    fig.add_trace(go.Scatter(x=slot[21:], y=func(slot[21:], *best_fit_ab_ratio2),
 #                             line=dict(color='blue', width=2.5, dash='dash'), name=str(round(best_fit_ab_ratio2[0], 3))
 #                                            + '*x + ' + str(round(best_fit_ab_ratio2[1], 3))))
+#
+#    fig.update_layout( xaxis_title="days from 10.03", xaxis = dict(
+#        tickmode = 'array',
+#        tickvals = slot[17:],
+#        ticktext = [str(x)+'.03' for x in range(10,32)]+[str(x)+'.04' for x in range(1,31)]) ,
+#                       yaxis_title='Ratio Infected/Swabs')
+#    st.plotly_chart(fig)
 
-    fig.update_layout( xaxis_title="days from 10.03", xaxis = dict(
-        tickmode = 'array',
-        tickvals = slot[17:],
-        ticktext = [str(x)+'.03' for x in range(10,32)]+[str(x)+'.04' for x in range(1,31)]) ,
-                       yaxis_title='Ratio Infected/Swabs')
+    fig = go.Figure([go.Bar(name='Swabs', marker=dict(color='orange'),x=list_dates[17:], y=list_tamponi[15:])])
+    fig.update_layout(yaxis_title='Swabs')
     st.plotly_chart(fig)
 
 
+    fig = go.Figure([go.Bar( marker=dict(color='red'),x=list_dates[17:], y=ratio[15:])])
+    fig.update_layout(yaxis_title='Swabs')
+    st.plotly_chart(fig)
 
     ##SQUARE
 #    func = lambda x, a, b, c : a*x**2 + b*x + c
@@ -292,8 +308,8 @@ def main():
     ratio = [1.0*x1/x2 for x1, x2 in zip(list_death, list_terapia)]
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=slot, y=list_ricoverati, mode='markers', name='Ricoverati',line_color='black'))
-    fig.add_trace(go.Scatter(x=slot, y=func(slot[2:], *best_fit_ab_ricoveri), mode='lines', name='Exp',
-                             line_color='black'))
+#    fig.add_trace(go.Scatter(x=slot, y=func(slot[2:], *best_fit_ab_ricoveri), mode='lines', name='Exp',
+#                             line_color='black'))
     fig.add_trace(go.Scatter(x=slot, y=list_terapia, mode='markers',name='Terapia Intensiva' ,line_color='red'))
     fig.add_trace(go.Scatter(x=slot, y=list_death[2:], mode='markers', name='Deceduti', line_color='grey'))
     #fig.add_trace(go.Scatter(x=slot, y=ratio, mode='lines', name='Ratio Death/Terapia_Intensiva', line_color='blue'))    
