@@ -57,8 +57,8 @@ def plot_figure(func, list_conf, best_fit_a_b, sigma_a_b, slot, kind, option):
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=slot, y=list_conf, mode='markers', name=kind, line_color='black'))
-    #fig.add_trace(go.Scatter(x=slot, y=bound_upper, mode='lines', line_color='grey', showlegend=False))
-    #fig.add_trace(go.Scatter(x=slot, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
+    fig.add_trace(go.Scatter(x=slot, y=bound_upper, mode='lines', line_color='grey', showlegend=False))
+    fig.add_trace(go.Scatter(x=slot, y=bound_lower, fill='tonexty', mode='lines', name='Error', line_color='grey'))
     fig.add_trace(go.Scatter(x=slot, y=func(slot, *best_fit_a_b), mode='lines', name='Fit ' + option, line_color='red'))
 
     fig.update_layout( xaxis_title="days", xaxis = dict(
@@ -328,14 +328,14 @@ def main():
 
     option = st.selectbox(
         'Choose the Epidemiologic Law :',
-        ['Exponential Law', 'Gompertz Law', 'Logistic Law'])
+        ['Gompertz Law', 'Logistic Law'])
 
-    if option == 'Exponential Law':
-        st.subheader('Exponential fit : ')
-        st.latex(r'''func = ae^{b(day)}''')
+    #if option == 'Exponential Law':
+    #    st.subheader('Exponential fit : ')
+    #    st.latex(r'''func = ae^{b(day)}''')
 
-        func = lambda x, a, b: a * np.exp(b * (x - 1))
-    elif option == 'Gompertz Law':
+    #    func = lambda x, a, b: a * np.exp(b * (x - 1))
+    if option == 'Gompertz Law':
         st.subheader('Gompertz fit : ')
         st.latex(r'''func = a*exp\left\{ ln\left(\frac{N(day=1)}{a} \right) e^{-b(day)} \right\}''')
         c = 1
